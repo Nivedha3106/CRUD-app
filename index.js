@@ -36,6 +36,36 @@ app.get("/users", (req, res) => {
   res.json(users);
 });
 
+//Get single records
+app.get("/users/:id", (req, res) => {
+  const user = users.find(u => u.id === parseInt(req.params.id));
+  if (!user) return res.status(404).json({ error: "User not found" });
+  res.json(user);
+});
+
+// Update the record
+app.put("/users/:id", (req, res) => {
+  const user = users.find(u => u.id === parseInt(req.params.id));
+  if (!user) return res.status(404).json({ error: "User not found" });
+
+  const { name, dob, aadhaar } = req.body;
+
+  if (name) user.name = name;
+  if (dob) user.dob = dob;
+  if (aadhaar) user.aadhaar = aadhaar;
+
+  res.json(user);
+});
+
+// Delete the record
+app.delete("/users/:id", (req, res) => {
+  const index = users.findIndex(u => u.id === parseInt(req.params.id));
+  if (index === -1) return res.status(404).json({ error: "User not found" });
+
+  const deletedUser = users.splice(index, 1);
+  res.json(deletedUser[0]);
+});
+
 app.listen(PORT, () => {
   console.log(`Server running on http://localhost:${PORT}`);
 });
